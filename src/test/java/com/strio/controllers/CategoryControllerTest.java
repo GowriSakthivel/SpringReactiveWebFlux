@@ -55,7 +55,7 @@ public class CategoryControllerTest {
                 .willReturn(Flux.just(Category.builder().description("cat").build()));
 
         Mono<Category> categoryMono = Mono.just(Category.builder().build());
-        webTestClient.put()
+        webTestClient.post()
                 .uri("/api/categories")
                 .body(categoryMono, Category.class)
                 .exchange()

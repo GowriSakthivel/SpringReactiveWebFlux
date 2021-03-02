@@ -2,9 +2,9 @@ package com.strio.controllers;
 
 import com.strio.domain.Category;
 import com.strio.repositories.CategoryRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.reactivestreams.Publisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,5 +25,17 @@ public class CategoryController {
     @GetMapping("/api/categories/{id}")
     Mono<Category> getById(@PathVariable String id){
         return categoryRepository.findById(id);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/api/categories")
+    Mono<Void> create(@RequestBody Publisher<Category> categoryStream){
+        return categoryRepository.saveAll(categoryStream).then();
+    }
+
+    @PostMapping("/api/categories/{id}")
+    Mono<Category> update(@PathVariable String id, @RequestBody Category category){
+        category.setId(id);
+        return categoryRepository.save(category);
     }
 }
